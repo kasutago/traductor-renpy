@@ -1,0 +1,8 @@
+# Se descargan o generan solos al usar la app
+herramientas/
+salida/
+__pycache__/
+*.pyc
+
+# Configuración personal (ruta del último juego abierto)
+config.json

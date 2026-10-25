@@ -1,0 +1,71 @@
+TRADUCTOR REN'PY
+================
+
+Traduce juegos de Ren'Py al español sin tocar el código del juego.
+Todo funciona en tu PC (sin internet), salvo las descargas de la primera vez.
+
+REQUISITOS
+- Windows: Python 3 instalado (con tkinter, viene por defecto).
+- Linux: Python 3 y tkinter (Arch/CachyOS: sudo pacman -S tk). El juego debe
+  traer su versión de Linux (lib/py2-linux-x86_64 o similar).
+
+CÓMO SE USA
+1. Windows: doble clic en Traductor.bat.
+   Linux: ejecuta una vez ./crear_acceso_directo.sh y abre "Traductor Ren'Py"
+   desde el menú de aplicaciones (así no se abre la terminal negra detrás).
+   También vale ./Traductor.sh, pero deja la terminal abierta.
+   Sin interfaz:  python traductor.py completo <juego>  (y luego traducir_auto).
+2. Elige el .exe (o el .sh en Linux) del juego.
+3. "Extraer y crear botón": extrae los .rpa, decompila los .rpyc, crea
+   game/tl/spanish y añade el botón de idioma al juego.
+4. "Traducir": traduce con MarianMT. Al final comprueba con el propio juego
+   que todo carga sin errores. Antes de empezar hace una copia de seguridad.
+5. "Exportar traducción": crea un .zip pequeño (solo la traducción y el botón)
+   para compartirla sin el juego.
+
+DESPUÉS DE TRADUCIR
+- "Sugerir glosario...": busca los nombres que se repiten en el juego (para que
+  no se traduzcan ni se deformen) y las palabras que el modelo dejó en inglés.
+  Edita la lista y pulsa "Añadir al glosario"; vuelve a traducir para aplicarlo.
+- "Revisar traducción...": lista las líneas sospechosas (sin traducir, trato de
+  usted, variables cambiadas, texto basura, muy cortas o largas, sin ¿ ¡).
+  Muestra el contexto, se puede buscar texto, corregir a mano (Ctrl+Enter guarda
+  y pasa a la siguiente) o pedir otra traducción con "Traducir de nuevo".
+
+En el juego: botón arriba a la derecha o Mayús+L para cambiar de idioma.
+En Ren'Py 6.x antiguos el botón sale durante la partida, no en el menú.
+
+PRIMERA VEZ (se descarga solo, todo dentro de la carpeta herramientas/)
+- unrpyc (decompilador), al decompilar el primer juego: unos segundos.
+- MarianMT (traductor), al traducir el primer juego: unos minutos y ~1 GB
+  temporal; al final ocupa unos 450 MB.
+
+TRATO AL LECTOR
+- Por defecto traduce "you/your" como tú/tu (en traducir_auto.py, MarianBackend.TRATO =
+  "tu"). Si el modelo responde con "usted/su", reintenta con variantes hasta acertar.
+  Para dejar lo que dé el modelo, pon TRATO = "usted".
+- Imperativos también en tú ("Wait." -> "Espera.", "siéntase" -> "siéntete").
+- Etiquetas de formato dentro de la frase ("maybe {b}you{/b} can") ya no la parten:
+  se traduce entera y la etiqueta vuelve sobre la palabra traducida; si no se
+  encuentra, queda vacía ("{b}{/b}", invisible) y se pierde solo el énfasis.
+- Arregla también: ¿ ¡ que faltan, tartamudeos (T-That), guion de interrupción (–),
+  nombres con tilde/diéresis (Götz), abreviaturas (Ms., Dr.) y variables en mitad
+  de la frase ("Hey! [name], right?" -> "¡Oye! [name], ¿verdad?").
+- Si el modelo suelta texto basura ("Me gusta Cargando...") o repite letras sin
+  fin, reintenta con variantes de la frase; si no lo logra, la línea queda sin
+  traducir y sale en el informe (nunca se guarda basura).
+- Usa varios procesos de Marian a la vez (4 en una CPU de 12 hilos).
+
+LÍMITES CONOCIDOS
+- El género de "you" lo adivina el modelo (escéptico / escéptica).
+- Algunos "le/les" de usted ("la profesora le sonríe") no se detectan.
+- Palabras raras o argot pueden salir mal ("smurf" -> "pechugona"): usa el glosario.
+
+ARCHIVOS
+- glosario.txt: traducciones fijas ("Stewie's Missions = Misiones de Stewie").
+- salida/<juego>/: se crea sola al usar la app. Archivos extraídos, copias de
+  seguridad e informe de líneas que no se pudieron traducir
+  (informe_traduccion.txt). Se puede borrar cuando termines con un juego: la
+  traducción ya está instalada en el propio juego.
+- herramientas/: MarianMT (el modelo y su Python). No lo borres o se volverá a
+  descargar (~1 GB) la próxima vez que traduzcas.

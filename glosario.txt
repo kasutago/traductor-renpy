@@ -1,0 +1,5 @@
+# Glosario del traductor. Una entrada por línea:
+#   texto en inglés = traducción
+# Si la traducción se deja vacía, el texto se mantiene igual (útil para nombres):
+#   Quahog =
+# Las líneas que empiezan por # se ignoran.

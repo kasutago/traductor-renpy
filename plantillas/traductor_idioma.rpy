@@ -6,6 +6,8 @@
 #     del juego (config.always_shown_screens).
 #   - Ren'Py 6.99.11 a 7.4: botón durante la partida (config.overlay_screens).
 #   - Cualquier versión: atajo de teclado Mayús+L.
+#   - Las fuentes del juego sin tildes ni ñ se cambian por DejaVuSans
+#     mientras el juego está traducido.
 
 init 999 python:
 
@@ -45,6 +47,33 @@ init 999 python:
 
     config.keymap["traductor_idioma"] = [ "shift_K_l" ]
     config.underlay.append(renpy.Keymap(traductor_idioma=traductor_cambiar))
+
+    # Fuentes del juego que no tienen tildes ni ñ. Mientras el juego está en
+    # la traducción se dibujan con DejaVuSans, que viene con Ren'Py; en el
+    # idioma original no cambia nada. Se compara solo el nombre del archivo
+    # porque cada juego escribe la ruta a su manera.
+    traductor_fuentes = @@FUENTES@@
+    traductor_texto = (_traductor_py.type(u""), _traductor_py.type(""))
+
+    class TraductorMapaFuentes(_traductor_py.dict):
+
+        def get(self, key, default=None):
+            rv = _traductor_py.dict.get(self, key, None)
+            if rv is not None:
+                return rv
+            try:
+                fn, bold, italics = key
+            except Exception:
+                return default
+            if (traductor_activo() and _traductor_py.isinstance(fn, traductor_texto)
+                    and fn.replace("\\", "/").split("/")[-1].lower() in traductor_fuentes):
+                if bold:
+                    return ("DejaVuSans-Bold.ttf", False, italics)
+                return ("DejaVuSans.ttf", False, italics)
+            return default
+
+    if traductor_fuentes:
+        config.font_replacement_map = TraductorMapaFuentes(config.font_replacement_map)
 
 screen traductor_idioma:
     zorder 1000

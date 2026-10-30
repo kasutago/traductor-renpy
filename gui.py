@@ -60,7 +60,7 @@ class App(object):
         self.control = None
         self.events = queue.Queue()
 
-        root.title("Traductor Ren'Py")
+        root.title("Traductor Ren'Py " + traductor.VERSION)
         root.geometry("820x640")
         root.minsize(700, 520)
 

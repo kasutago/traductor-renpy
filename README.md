@@ -1,10 +1,24 @@
 # Traductor Ren'Py
 
+**Versión 0.9.0** · en desarrollo: funciona, pero aún le faltan detalles por pulir.
+
 Traduce juegos de **Ren'Py** del inglés al **español** sin tocar el código del
 juego. Todo funciona en tu PC, sin internet y sin censura: usa **MarianMT**
 (`Helsinki-NLP/opus-mt-tc-big-en-es`) acelerado con **CTranslate2** en la CPU.
 
 Funciona en **Windows** y **Linux**, con juegos de Ren'Py 6.99, 7 y 8.
+
+## Capturas
+
+**Antes y después** (TOXICity, Ren'Py 7.4: 28.826 líneas traducidas en unos 24 minutos):
+
+| Original | Traducido |
+| --- | --- |
+| ![Juego en inglés](capturas/antes.jpg) | ![Juego traducido al español](capturas/despues.jpg) |
+
+| La app traduciendo | Revisión de las líneas dudosas |
+| --- | --- |
+| ![Ventana principal](capturas/ventana.png) | ![Pantalla de revisión](capturas/revision.png) |
 
 ## Qué hace
 
@@ -30,6 +44,9 @@ Funciona en **Windows** y **Linux**, con juegos de Ren'Py 6.99, 7 y 8.
 - Detecta y **reintenta el texto basura** que a veces suelta el modelo
   ("Me gusta Cargando…"); nunca lo guarda.
 - **Glosario** de traducciones fijas y sugerencias automáticas de nombres.
+- **Fuentes sin tildes ni ñ**: detecta las fuentes del juego a las que les faltan
+  letras del español y, solo en la traducción, las cambia por DejaVuSans (incluida
+  en Ren'Py) para que no salga "Espa ol".
 - Varios procesos de MarianMT en paralelo; si uno se cae, se reinicia solo.
 
 ## Requisitos
@@ -64,3 +81,8 @@ botón** → **Traducir**. Más detalles en [`LEEME.txt`](LEEME.txt).
 - [MarianMT / OPUS-MT](https://github.com/Helsinki-NLP/Opus-MT), Helsinki-NLP (CC-BY 4.0).
 - [CTranslate2](https://github.com/OpenNMT/CTranslate2), OpenNMT.
 - [unrpyc](https://github.com/CensoredUsername/unrpyc), CensoredUsername.
+
+## Licencia
+
+[MIT](LICENSE) © 2026 kasutago. Las herramientas y el modelo de los créditos
+tienen sus propias licencias.

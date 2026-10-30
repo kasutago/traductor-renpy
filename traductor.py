@@ -21,6 +21,7 @@ Uso:
 
 import argparse
 import datetime
+import json
 import os
 import re
 import shutil
@@ -28,8 +29,11 @@ import subprocess
 import sys
 
 import decompilar
+import fuentes
 import rpa
 import textos_pantalla
+
+VERSION = "0.9.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUT = os.path.join(HERE, "salida")
@@ -345,15 +349,25 @@ BUTTON_FILE = "traductor_idioma.rpy"
 BUTTON_TEMPLATE = os.path.join(HERE, "plantillas", BUTTON_FILE)
 
 
-def write_button(game, language):
+def write_button(game, language, out_root):
     """
     Añade game/traductor_idioma.rpy: un archivo nuevo e independiente que
-    pone el botón de idioma. No toca ningún archivo del juego.
+    pone el botón de idioma y cambia las fuentes sin tildes ni ñ. No toca
+    ningún archivo del juego.
     """
     name = LANGUAGE_NAMES.get(language.lower(), language.replace("_", " ").title())
     with open(BUTTON_TEMPLATE, "r", encoding="utf-8") as f:
         code = f.read()
+
+    # Las fuentes pueden estar sueltas o dentro de los .rpa (ya extraídos).
+    extracted = os.path.join(out_dir_for(game, out_root), "extraido")
+    bad = fuentes.fonts_without_spanish(game.gamedir, extracted)
+    for fn in sorted(bad):
+        log("  La fuente {} no tiene «{}»: en español se usará DejaVuSans.".format(fn, bad[fn]))
+    font_list = "[" + ", ".join("u" + json.dumps(fn.lower()) for fn in sorted(bad)) + "]"
+
     code = code.replace("@@IDIOMA@@", language).replace("@@NOMBRE@@", name.replace('"', ""))
+    code = code.replace("@@FUENTES@@", font_list)
 
     dst = os.path.join(game.gamedir, BUTTON_FILE)
     with open(dst, "w", encoding="utf-8") as f:
@@ -403,7 +417,7 @@ def install(tl_src, game, language, out_root, button=True):
     shutil.copytree(tl_src, dst)
     log("  Traducción instalada en: {}".format(dst))
     if button:
-        write_button(game, language)
+        write_button(game, language, out_root)
 
 
 EXPORT_README = u"""Traducción al español de {juego}
@@ -570,6 +584,7 @@ def main():
         return
 
     ap = argparse.ArgumentParser(description="Traductor de juegos Ren'Py")
+    ap.add_argument("--version", action="version", version="Traductor Ren'Py " + VERSION)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     def common(p):
